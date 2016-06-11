@@ -44,6 +44,7 @@ endif()
 add_executable (websocket-example
     ${BEAST_INCLUDES}
     ${EXTRAS_INCLUDES}
+    ${ZLIB_SOURCES}
     websocket_example.cpp
 )
 

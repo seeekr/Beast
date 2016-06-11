@@ -90,7 +90,7 @@ public:
                         return;
                     if(! BEAST_EXPECT(sb.size() == 0))
                         return;
-                    BEAST_EXPECT(stream.rd_fh_ == fh);
+                    BEAST_EXPECT(stream.rd_.fh == fh);
                 };
 
             test_fh fh;
