@@ -16,6 +16,7 @@ add_executable (http-tests
     body_type.cpp
     concepts.cpp
     empty_body.cpp
+    get.cpp
     headers.cpp
     message.cpp
     message_v1.cpp
