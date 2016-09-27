@@ -1,3 +1,9 @@
+1.0.0-b15
+
+* Buffer sequence containers conform to concepts
+
+--------------------------------------------------------------------------------
+
 1.0.0-b14
 
 * Add missing rebind to handler_alloc
