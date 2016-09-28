@@ -24,7 +24,7 @@ namespace websocket {
 namespace detail {
 
 /// Identifies the role of a WebSockets stream.
-enum class role_type
+enum class role_type : std::uint8_t
 {
     /// Stream is operating as a client.
     client,
@@ -36,14 +36,14 @@ enum class role_type
 // Contents of a WebSocket frame header
 struct frame_header
 {
-    opcode op;
-    bool fin;
-    bool mask;
-    bool rsv1;
-    bool rsv2;
-    bool rsv3;
     std::uint64_t len;
     std::uint32_t key;
+    opcode op;
+    bool fin : 1;
+    bool mask : 1;
+    bool rsv1 : 1;
+    bool rsv2 : 1;
+    bool rsv3 : 1;
 };
 
 // holds the largest possible frame header
