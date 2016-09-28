@@ -12,6 +12,7 @@
 * Use BOOST_ASSERT
 * Better WebSocket decorator
 * Update and tidy documentation
+* Use xor_shift_engine for calculating mask keys
 
 --------------------------------------------------------------------------------
 

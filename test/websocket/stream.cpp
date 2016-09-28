@@ -1359,6 +1359,14 @@ public:
         }
     }
 
+    void
+    showSizes()
+    {
+        log <<
+            "sizeof(stream_base) == " << sizeof(detail::stream_base) << "\n" <<
+            "sizeof(stream<...>) == " << sizeof(stream<socket_type>) << "\n";
+    }
+
     void run() override
     {
         static_assert(std::is_constructible<
@@ -1378,6 +1386,8 @@ public:
 
         static_assert(! std::is_move_assignable<
             stream<socket_type&>>::value, "");
+
+        showSizes();
 
         auto const any = endpoint_type{
             address_type::from_string("127.0.0.1"), 0};
