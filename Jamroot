@@ -89,7 +89,6 @@ project beast
     <library>/boost/program_options//boost_program_options
     <define>BOOST_ALL_NO_LIB=1
     <define>BOOST_SYSTEM_NO_DEPRECATED=1
-    <link>static
     <threading>multi
     <runtime-link>shared
     <debug-symbols>on
