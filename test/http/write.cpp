@@ -220,7 +220,7 @@ public:
 
     template<bool isRequest, class Body, class Headers>
     std::string
-    str(message_v1<isRequest, Body, Headers> const& m)
+    str(message<isRequest, Body, Headers> const& m)
     {
         string_write_stream ss(ios_);
         write(ss, m);
@@ -231,7 +231,7 @@ public:
     testAsyncWrite(yield_context do_yield)
     {
         {
-            message_v1<false, string_body, headers> m;
+            message<false, string_body, headers> m;
             m.version = 10;
             m.status = 200;
             m.reason = "OK";
@@ -250,7 +250,7 @@ public:
                     "*****");
         }
         {
-            message_v1<false, string_body, headers> m;
+            message<false, string_body, headers> m;
             m.version = 11;
             m.status = 200;
             m.reason = "OK";
@@ -283,7 +283,7 @@ public:
             test::fail_counter fc(n);
             test::fail_stream<
                 string_write_stream> fs(fc, ios_);
-            message_v1<true, fail_body, headers> m(
+            message<true, fail_body, headers> m(
                 std::piecewise_construct,
                     std::forward_as_tuple(fc, ios_));
             m.method = "GET";
@@ -316,7 +316,7 @@ public:
             test::fail_counter fc(n);
             test::fail_stream<
                 string_write_stream> fs(fc, ios_);
-            message_v1<true, fail_body, headers> m(
+            message<true, fail_body, headers> m(
                 std::piecewise_construct,
                     std::forward_as_tuple(fc, ios_));
             m.method = "GET";
@@ -351,7 +351,7 @@ public:
             test::fail_counter fc(n);
             test::fail_stream<
                 string_write_stream> fs(fc, ios_);
-            message_v1<true, fail_body, headers> m(
+            message<true, fail_body, headers> m(
                 std::piecewise_construct,
                     std::forward_as_tuple(fc, ios_));
             m.method = "GET";
@@ -386,7 +386,7 @@ public:
             test::fail_counter fc(n);
             test::fail_stream<
                 string_write_stream> fs(fc, ios_);
-            message_v1<true, fail_body, headers> m(
+            message<true, fail_body, headers> m(
                 std::piecewise_construct,
                     std::forward_as_tuple(fc, ios_));
             m.method = "GET";
@@ -416,7 +416,7 @@ public:
             test::fail_counter fc(n);
             test::fail_stream<
                 string_write_stream> fs(fc, ios_);
-            message_v1<true, fail_body, headers> m(
+            message<true, fail_body, headers> m(
                 std::piecewise_construct,
                     std::forward_as_tuple(fc, ios_));
             m.method = "GET";
@@ -447,7 +447,7 @@ public:
     {
         // auto content-length HTTP/1.0
         {
-            message_v1<true, string_body, headers> m;
+            message<true, string_body, headers> m;
             m.method = "GET";
             m.url = "/";
             m.version = 10;
@@ -464,7 +464,7 @@ public:
         }
         // keep-alive HTTP/1.0
         {
-            message_v1<true, string_body, headers> m;
+            message<true, string_body, headers> m;
             m.method = "GET";
             m.url = "/";
             m.version = 10;
@@ -482,7 +482,7 @@ public:
         }
         // upgrade HTTP/1.0
         {
-            message_v1<true, string_body, headers> m;
+            message<true, string_body, headers> m;
             m.method = "GET";
             m.url = "/";
             m.version = 10;
@@ -500,7 +500,7 @@ public:
         }
         // no content-length HTTP/1.0
         {
-            message_v1<true, unsized_body, headers> m;
+            message<true, unsized_body, headers> m;
             m.method = "GET";
             m.url = "/";
             m.version = 10;
@@ -520,7 +520,7 @@ public:
         }
         // auto content-length HTTP/1.1
         {
-            message_v1<true, string_body, headers> m;
+            message<true, string_body, headers> m;
             m.method = "GET";
             m.url = "/";
             m.version = 11;
@@ -537,7 +537,7 @@ public:
         }
         // close HTTP/1.1
         {
-            message_v1<true, string_body, headers> m;
+            message<true, string_body, headers> m;
             m.method = "GET";
             m.url = "/";
             m.version = 11;
@@ -559,7 +559,7 @@ public:
         }
         // upgrade HTTP/1.1
         {
-            message_v1<true, empty_body, headers> m;
+            message<true, empty_body, headers> m;
             m.method = "GET";
             m.url = "/";
             m.version = 11;
@@ -574,7 +574,7 @@ public:
         }
         // no content-length HTTP/1.1
         {
-            message_v1<true, unsized_body, headers> m;
+            message<true, unsized_body, headers> m;
             m.method = "GET";
             m.url = "/";
             m.version = 11;
@@ -598,7 +598,7 @@ public:
 
     void testConvert()
     {
-        message_v1<true, string_body, headers> m;
+        message<true, string_body, headers> m;
         m.method = "GET";
         m.url = "/";
         m.version = 11;
@@ -611,7 +611,7 @@ public:
 
     void testOstream()
     {
-        message_v1<true, string_body, headers> m;
+        message<true, string_body, headers> m;
         m.method = "GET";
         m.url = "/";
         m.version = 11;

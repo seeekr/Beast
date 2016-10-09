@@ -33,7 +33,7 @@ class read_op
         parser_v1<isRequest, Body, Headers>;
 
     using message_type =
-        message_v1<isRequest, Body, Headers>;
+        message<isRequest, Body, Headers>;
 
     struct data
     {
@@ -144,7 +144,7 @@ template<class SyncReadStream, class DynamicBuffer,
     bool isRequest, class Body, class Headers>
 void
 read(SyncReadStream& stream, DynamicBuffer& dynabuf,
-    message_v1<isRequest, Body, Headers>& msg)
+    message<isRequest, Body, Headers>& msg)
 {
     static_assert(is_SyncReadStream<SyncReadStream>::value,
         "SyncReadStream requirements not met");
@@ -162,7 +162,7 @@ template<class SyncReadStream, class DynamicBuffer,
     bool isRequest, class Body, class Headers>
 void
 read(SyncReadStream& stream, DynamicBuffer& dynabuf,
-    message_v1<isRequest, Body, Headers>& m,
+    message<isRequest, Body, Headers>& m,
         error_code& ec)
 {
     static_assert(is_SyncReadStream<SyncReadStream>::value,
@@ -185,7 +185,7 @@ template<class AsyncReadStream, class DynamicBuffer,
 typename async_completion<
     ReadHandler, void(error_code)>::result_type
 async_read(AsyncReadStream& stream, DynamicBuffer& dynabuf,
-    message_v1<isRequest, Body, Headers>& m,
+    message<isRequest, Body, Headers>& m,
         ReadHandler&& handler)
 {
     static_assert(is_AsyncReadStream<AsyncReadStream>::value,

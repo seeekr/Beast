@@ -10,7 +10,7 @@
 
 #include <beast/http/basic_parser_v1.hpp>
 #include <beast/http/concepts.hpp>
-#include <beast/http/message_v1.hpp>
+#include <beast/http/message.hpp>
 #include <beast/core/error.hpp>
 #include <boost/assert.hpp>
 #include <functional>
@@ -70,7 +70,7 @@ struct skip_body
 /** A parser for producing HTTP/1 messages.
 
     This class uses the basic HTTP/1 wire format parser to convert
-    a series of octets into a `message_v1`.
+    a series of octets into a `message`.
 
     @note A new instance of the parser is required for each message.
 */
@@ -84,7 +84,7 @@ class parser_v1
 public:
     /// The type of message this parser produces.
     using message_type =
-        message_v1<isRequest, Body, Headers>;
+        message<isRequest, Body, Headers>;
 
 private:
     static_assert(is_ReadableBody<Body>::value,

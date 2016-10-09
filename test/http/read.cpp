@@ -190,7 +190,7 @@ public:
                 "Content-Length: 0\r\n"
                 "\r\n"
             );
-            request_v1<streambuf_body> m;
+            request<streambuf_body> m;
             try
             {
                 streambuf sb;
@@ -212,7 +212,7 @@ public:
                 "Content-Length: 0\r\n"
                 "\r\n"
             );
-            request_v1<streambuf_body> m;
+            request<streambuf_body> m;
             error_code ec;
             streambuf sb;
             read(fs, sb, m, ec);
@@ -230,7 +230,7 @@ public:
                 "Content-Length: 0\r\n"
                 "\r\n"
             );
-            request_v1<streambuf_body> m;
+            request<streambuf_body> m;
             error_code ec;
             streambuf sb;
             async_read(fs, sb, m, do_yield[ec]);

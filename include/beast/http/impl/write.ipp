@@ -35,7 +35,7 @@ namespace detail {
 template<class DynamicBuffer, class Body, class Headers>
 void
 write_firstline(DynamicBuffer& dynabuf,
-    message_v1<true, Body, Headers> const& msg)
+    message<true, Body, Headers> const& msg)
 {
     write(dynabuf, msg.method);
     write(dynabuf, " ");
@@ -63,7 +63,7 @@ write_firstline(DynamicBuffer& dynabuf,
 template<class DynamicBuffer, class Body, class Headers>
 void
 write_firstline(DynamicBuffer& dynabuf,
-    message_v1<false, Body, Headers> const& msg)
+    message<false, Body, Headers> const& msg)
 {
     switch(msg.version)
     {
@@ -112,7 +112,7 @@ struct write_preparation
     using headers_type =
         basic_headers<std::allocator<char>>;
 
-    message_v1<isRequest, Body, Headers> const& msg;
+    message<isRequest, Body, Headers> const& msg;
     typename Body::writer w;
     streambuf sb;
     bool chunked;
@@ -120,7 +120,7 @@ struct write_preparation
 
     explicit
     write_preparation(
-            message_v1<isRequest, Body, Headers> const& msg_)
+            message<isRequest, Body, Headers> const& msg_)
         : msg(msg_)
         , w(msg)
         , chunked(token_list{
@@ -165,7 +165,7 @@ class write_op
 
         template<class DeducedHandler>
         data(DeducedHandler&& h_, Stream& s_,
-                message_v1<isRequest, Body, Headers> const& m_)
+                message<isRequest, Body, Headers> const& m_)
             : s(s_)
             , wp(m_)
             , h(std::forward<DeducedHandler>(h_))
@@ -471,7 +471,7 @@ template<class SyncWriteStream,
     bool isRequest, class Body, class Headers>
 void
 write(SyncWriteStream& stream,
-    message_v1<isRequest, Body, Headers> const& msg)
+    message<isRequest, Body, Headers> const& msg)
 {
     static_assert(is_SyncWriteStream<SyncWriteStream>::value,
         "SyncWriteStream requirements not met");
@@ -487,7 +487,7 @@ template<class SyncWriteStream,
     bool isRequest, class Body, class Headers>
 void
 write(SyncWriteStream& stream,
-    message_v1<isRequest, Body, Headers> const& msg,
+    message<isRequest, Body, Headers> const& msg,
         error_code& ec)
 {
     static_assert(is_SyncWriteStream<SyncWriteStream>::value,
@@ -571,7 +571,7 @@ template<class AsyncWriteStream,
 typename async_completion<
     WriteHandler, void(error_code)>::result_type
 async_write(AsyncWriteStream& stream,
-    message_v1<isRequest, Body, Headers> const& msg,
+    message<isRequest, Body, Headers> const& msg,
         WriteHandler&& handler)
 {
     static_assert(is_AsyncWriteStream<AsyncWriteStream>::value,
@@ -637,7 +637,7 @@ public:
 template<bool isRequest, class Body, class Headers>
 std::ostream&
 operator<<(std::ostream& os,
-    message_v1<isRequest, Body, Headers> const& msg)
+    message<isRequest, Body, Headers> const& msg)
 {
     static_assert(is_WritableBody<Body>::value,
         "WritableBody requirements not met");
