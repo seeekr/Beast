@@ -711,25 +711,6 @@ write(z_stream& zs, int flush)
     return ret;
 }
 
-/* Allow machine dependent optimization for post-increment or pre-increment.
-   Based on testing to date,
-   Pre-increment preferred for:
-   - PowerPC G3 (Adler)
-   - MIPS R5000 (Randers-Pehrson)
-   Post-increment preferred for:
-   - none
-   No measurable difference:
-   - Pentium III (Anderson)
-   - M68060 (Nikl)
- */
-#ifdef POSTINC
-#  define OFF 0
-#  define PUP(a) *(a)++
-#else
-#  define OFF 1
-#  define PUP(a) *++(a)
-#endif
-
 /*
    Decode literal, length, and distance codes and write out the resulting
    literal and match bytes until either not enough input or output is
@@ -797,9 +778,9 @@ inflate_fast(
     unsigned char *from;        // where to copy match from
 
     /* copy state to local variables */
-    in = zs.next_in - OFF;
+    in = zs.next_in;
     last = in + (zs.avail_in - 5);
-    out = zs.next_out - OFF;
+    out = zs.next_out;
     beg = out - (start - zs.avail_out);
     end = out + (zs.avail_out - 257);
 #ifdef INFLATE_STRICT
@@ -822,9 +803,9 @@ inflate_fast(
     {
         if(bits < 15)
         {
-            hold += (unsigned long)(PUP(in)) << bits;
+            hold += (unsigned long)(*in++) << bits;
             bits += 8;
-            hold += (unsigned long)(PUP(in)) << bits;
+            hold += (unsigned long)(*in++) << bits;
             bits += 8;
         }
         here = lcode[hold & lmask];
@@ -836,7 +817,7 @@ inflate_fast(
         if(op == 0)
         {
             // literal
-            PUP(out) = (unsigned char)(here.val);
+            *out++ = (unsigned char)(here.val);
         }
         else if(op & 16)
         {
@@ -847,7 +828,7 @@ inflate_fast(
             {
                 if(bits < op)
                 {
-                    hold += (unsigned long)(PUP(in)) << bits;
+                    hold += (unsigned long)(*in++) << bits;
                     bits += 8;
                 }
                 len += (unsigned)hold & ((1U << op) - 1);
@@ -856,9 +837,9 @@ inflate_fast(
             }
             if(bits < 15)
             {
-                hold += (unsigned long)(PUP(in)) << bits;
+                hold += (unsigned long)(*in++) << bits;
                 bits += 8;
-                hold += (unsigned long)(PUP(in)) << bits;
+                hold += (unsigned long)(*in++) << bits;
                 bits += 8;
             }
             here = dcode[hold & dmask];
@@ -874,11 +855,11 @@ inflate_fast(
                 op &= 15; // number of extra bits
                 if(bits < op)
                 {
-                    hold += (unsigned long)(PUP(in)) << bits;
+                    hold += (unsigned long)(*in++) << bits;
                     bits += 8;
                     if(bits < op)
                     {
-                        hold += (unsigned long)(PUP(in)) << bits;
+                        hold += (unsigned long)(*in++) << bits;
                         bits += 8;
                     }
                 }
@@ -908,7 +889,7 @@ inflate_fast(
                             break;
                         }
                     }
-                    from = window - OFF;
+                    from = window;
                     if(wnext == 0)
                     {
                         // very common case
@@ -919,7 +900,7 @@ inflate_fast(
                             len -= op;
                             do
                             {
-                                PUP(out) = PUP(from);
+                                *out++ = *from++;
                             }
                             while(--op);
                             from = out - dist;  // rest from output */
@@ -936,9 +917,9 @@ inflate_fast(
                             len -= op;
                             do
                             {
-                                PUP(out) = PUP(from);
+                                *out++ = *from++;
                             } while(--op);
-                            from = window - OFF;
+                            from = window;
                             if(wnext < len)
                             {
                                 // some from start of window
@@ -946,7 +927,7 @@ inflate_fast(
                                 len -= op;
                                 do
                                 {
-                                    PUP(out) = PUP(from);
+                                    *out++ = *from++;
                                 }
                                 while(--op);
                                 from = out - dist; // rest from output
@@ -963,7 +944,7 @@ inflate_fast(
                             len -= op;
                             do
                             {
-                                PUP(out) = PUP(from);
+                                *out++ = *from++;
                             }
                             while(--op);
                             from = out - dist; // rest from output
@@ -971,16 +952,16 @@ inflate_fast(
                     }
                     while(len > 2)
                     {
-                        PUP(out) = PUP(from);
-                        PUP(out) = PUP(from);
-                        PUP(out) = PUP(from);
+                        *out++ = *from++;
+                        *out++ = *from++;
+                        *out++ = *from++;
                         len -= 3;
                     }
                     if(len)
                     {
-                        PUP(out) = PUP(from);
+                        *out++ = *from++;
                         if(len > 1)
-                            PUP(out) = PUP(from);
+                            *out++ = *from++;
                     }
                 }
                 else
@@ -990,17 +971,17 @@ inflate_fast(
                     do
                     {
                         // minimum length is three
-                        PUP(out) = PUP(from);
-                        PUP(out) = PUP(from);
-                        PUP(out) = PUP(from);
+                        *out++ = *from++;
+                        *out++ = *from++;
+                        *out++ = *from++;
                         len -= 3;
                     }
                     while(len > 2);
                     if(len)
                     {
-                        PUP(out) = PUP(from);
+                        *out++ = *from++;
                         if(len > 1)
-                            PUP(out) = PUP(from);
+                            *out++ = *from++;
                     }
                 }
             }
@@ -1045,8 +1026,8 @@ inflate_fast(
     hold &= (1U << bits) - 1;
 
     // update state and return
-    zs.next_in = in + OFF;
-    zs.next_out = out + OFF;
+    zs.next_in = in;
+    zs.next_out = out;
     zs.avail_in = (unsigned)(in < last ? 5 + (last - in) : 5 - (in - last));
     zs.avail_out = (unsigned)(out < end ?
                                  257 + (end - out) : 257 - (out - end));
