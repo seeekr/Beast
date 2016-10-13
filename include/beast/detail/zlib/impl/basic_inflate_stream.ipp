@@ -35,6 +35,7 @@
 #ifndef BEAST_ZLIB_IMPL_BASIC_INFLATE_STREAM_IPP
 #define BEAST_ZLIB_IMPL_BASIC_INFLATE_STREAM_IPP
 
+#include <beast/detail/zlib/error.hpp>
 #include <cassert>
 #include <cstring>
 
