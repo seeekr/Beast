@@ -1,7 +1,8 @@
 1.0.0-b17
 
-* Tidying
+* Tidy up some declarations
 * Fix Reader concept doc typo
+* Fix basic_streambuf::capacity
 
 --------------------------------------------------------------------------------
 
