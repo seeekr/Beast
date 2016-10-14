@@ -23,7 +23,7 @@ In this table:
 
 * `ec` is a value of type [link beast.ref.error_code `error_code&`]
 
-* `m` denotes a value of type `message const&` where
+* `m` denotes a value of type `message&` where
     `std::is_same<decltype(m.body), Body::value_type>::value == true`
 
 [table Reader requirements
